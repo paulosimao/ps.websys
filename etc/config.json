@@ -1,0 +1,7 @@
+{
+  "mongourl": "mongodb://192.168.25.2:27017/websys",
+  "web": {
+    "port": 3000,
+    "cookiename": "websys-auth"
+  }
+}
