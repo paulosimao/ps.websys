@@ -1,0 +1,34 @@
+{
+  "name": "ps.websys",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulosimao/ps.websys.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paulosimao/ps.websys/issues"
+  },
+  "homepage": "https://github.com/paulosimao/ps.websys#readme",
+  "dependencies": {
+    "async": "^1.5.2",
+    "body-parser": "^1.15.0",
+    "connect-multiparty": "^2.0.0",
+    "cookie-parser": "^1.4.1",
+    "ejs": "^2.4.1",
+    "express": "^4.13.4",
+    "fs-extra": "^0.28.0",
+    "moment": "^2.13.0",
+    "momentjs": "^1.1.6",
+    "mongodb": "^2.1.16",
+    "mongoose": "^4.4.13",
+    "session": "^0.1.0",
+    "uuid": "^2.0.2"
+  }
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css">
+    <script src="http://cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+    var url = "/d/task?q={}";
+
+    webix.ui({
+        rows: [
+            {
+                cols: [{
+                    view: "template",
+                    type: "header", template: "Gerenciador de Tarefas"
+                }, {
+                    view: "toolbar",
+                    id  : "myToolbar",
+                    cols: [
+                        {view: "button", id: "btnAdd", value: "+", width: 100, align: "left"},
+                        {view: "button", id: "btnRemove", value: "-", width: 100, align: "center"}]
+                }]
+            },
+            {
+                view        : "datatable",
+                id          : 'datatable',
+                select      : "row",
+                multiselect : true,
+                columns     : [
+                    {
+                        id          : "complete",
+                        header      : {content: "masterCheckbox"},
+                        checkValue  : true,
+                        uncheckValue: false,
+                        template    : "{common.checkbox()}",
+                        width       : 40
+                    },
+                    {id: "name", header: ["Name", {content: "textFilter"}], fillspace: 16, editor: "text"},
+                    {
+                        header   : "Due By",
+                        sort     : "string",
+                        id       : "dueby",
+                        editor   : "date",
+                        fillspace: 4,
+                        format   : webix.Date.dateToStr("%d/%m/%y")
+                    }
+
+                ],
+                autoConfig  : true,
+                resizeColumn: true,
+
+                editable: true,
+                url     : "/d/task?q={}",
+                save    : "/d/task?q={}"
+            },
+
+        ]
+    })
+    ;
+
+    $$("btnAdd").attachEvent("onItemClick", function () {
+        $$('datatable').add({complete: false, name: 'New Task', desc: 'New Task', dueby: new Date()});
+        $$('datatable').save();
+    });
+    $$("btnRemove").attachEvent("onItemClick", function () {
+        if (!$$("datatable").getSelectedId()) {
+            webix.message("No item is selected!");
+            return; //'data' is an ID of the needed component
+        }
+        $$("datatable").remove($$("datatable").getSelectedId());
+    });
+</script>
+</body>
+</html>
