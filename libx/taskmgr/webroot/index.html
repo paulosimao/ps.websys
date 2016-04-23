@@ -8,6 +8,7 @@
 <script type="text/javascript" charset="utf-8">
     var url = "/d/task?q={}";
 
+    //Main Screen
     webix.ui({
         rows: [
             {
@@ -18,6 +19,7 @@
                     view: "toolbar",
                     id  : "myToolbar",
                     cols: [
+                        {view: "button", id: "btnDetails", value: "Details", width: 100, align: "left"},
                         {view: "button", id: "btnAdd", value: "+", width: 100, align: "left"},
                         {view: "button", id: "btnRemove", value: "-", width: 100, align: "center"}]
                 }]
@@ -65,8 +67,33 @@
             },
 
         ]
-    })
-    ;
+    });
+
+    webix.ui({
+        view  : "window",
+        id    : "winDetails",
+        move  : true,
+        resize: true,
+        head  : "Details",
+        body  : {
+
+            view    : "form",
+            id      : "frmDetails",
+            width   : 300,
+            elements: [
+                {view: "textarea", label: "Desc", id: "desc", name: 'desc'},
+                {
+                    margin: 5, cols: [
+                    {view: "button", id: 'btnDetailsSave', value: "Save", type: "form"},
+                    {view: "button", id: 'btnDetailsCancel', value: "Cancel"}
+                ]
+                }
+            ]
+        }
+
+    });
+
+    $$('frmDetails').bind($$('datatable'));
 
     $$("btnAdd").attachEvent("onItemClick", function () {
         $$('datatable').add({complete: false, name: 'New Task', desc: 'New Task', dueby: new Date()});
@@ -79,6 +106,18 @@
         }
         $$("datatable").remove($$("datatable").getSelectedId());
     });
+    $$("btnDetails").attachEvent("onItemClick", function () {
+        $$('winDetails').show();
+    });
+    $$("btnDetailsCancel").attachEvent("onItemClick", function () {
+        $$('winDetails').hide();
+    })
+    $$("btnDetailsSave").attachEvent("onItemClick", function () {
+        $$('frmDetails').save();
+        $$('winDetails').hide();
+    })
+
+
 </script>
 </body>
 </html>
