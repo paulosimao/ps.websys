@@ -18,8 +18,10 @@
   "homepage": "https://github.com/paulosimao/ps.websys#readme",
   "dependencies": {
     "async": "^1.5.2",
+    "basic-auth": "^1.0.3",
     "body-parser": "^1.15.0",
     "cookie-parser": "^1.4.1",
+    "cron": "^1.1.0",
     "ejs": "^2.4.1",
     "express": "^4.13.4",
     "fs-extra": "^0.28.0",

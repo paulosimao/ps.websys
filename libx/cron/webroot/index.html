@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css">
+    <script src="http://cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+    var url = "/d/crontask?q={}";
+
+    //Main Screen
+    webix.ui({
+        rows: [
+            {
+                cols: [{
+                    view: "template",
+                    type: "header", template: "Cron Tasks"
+                }, {
+                    view: "toolbar",
+                    id  : "myToolbar",
+                    cols: [
+                        {view: "button", id: "btnReloadCron", value: "Reload Cron", width: 100, align: "left"},
+                        {view: "button", id: "btnAdd", value: "+", width: 100, align: "left"},
+                        {view: "button", id: "btnRemove", value: "-", width: 100, align: "center"}]
+                }]
+            },
+            {
+                cols: [
+                    {
+                        view        : "datatable",
+                        id          : 'datatable',
+                        select      : "row",
+                        multiselect : true,
+                        columns     : [
+                            {id: "name", header: ["Name", {content: "textFilter"}], fillspace: 4, editor: "text"},
+                            {
+                                id       : "pattern",
+                                header   : ["Pattern", {content: "textFilter"}],
+                                fillspace: 4,
+                                editor   : "text"
+                            },
+                            {
+                                id       : "timezone",
+                                header   : ["Timezone", {content: "textFilter"}],
+                                fillspace: 4,
+                                editor   : "text"
+                            },
+                            {
+                                id          : "enabled",
+                                header      : ['Enabled', {content: "masterCheckbox"}],
+                                checkValue  : true,
+                                uncheckValue: false,
+                                template    : "{common.checkbox()}",
+                                fillspace   : 2
+                            }
+
+                        ],
+                        autoConfig  : true,
+                        resizeColumn: true,
+
+                        editable: true,
+                        url     : url,
+                        save    : url
+                    },
+                    {
+                        view: 'form',
+                        id  : 'frmCode', elements: [
+                        {view: 'textarea', id: 'code', label: 'Code', name: 'code'},
+                        {view: 'button', value: 'Send', id: 'btnSend'}
+                    ]
+                    }
+                ]
+            },
+
+        ]
+    });
+
+    //region eventbinding
+    $$('frmCode').bind($$('datatable'));
+
+    $$("btnAdd").attachEvent("onItemClick", function () {
+        $$('datatable').add({
+            complete: false,
+            name    : 'New Cron Task',
+            pattern : '* * * * * *',
+            timezone: 'Americas/Sao_Paulo',
+            code    : '//please add code here\nfunction(){\n\tconsole.log("crontask");\n}'
+        });
+        $$('datatable').save();
+    });
+    $$("btnRemove").attachEvent("onItemClick", function () {
+        if (!$$("datatable").getSelectedId()) {
+            webix.message("No item is selected!");
+            return; //'data' is an ID of the needed component
+        }
+        $$("datatable").remove($$("datatable").getSelectedId());
+    });
+
+    $$("btnSend").attachEvent("onItemClick", function () {
+        $$('frmCode').save();
+
+    })
+    $$("btnReloadCron").attachEvent("onItemClick", function () {
+        webix.ajax('/c/cronreload', function (res) {
+            webix.message(res);
+        });
+    });
+
+    //endregion
+</script>
+</body>
+</html>

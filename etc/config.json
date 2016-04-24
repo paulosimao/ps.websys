@@ -2,7 +2,8 @@
   "mongourl": "mongodb://127.0.0.1:27017/websys",
   "web": {
     "port": 3000,
-    "cookiename": "websys-auth"
+    "cookiename": "websys-auth",
+    "realm": "websys"
   },
   "upload": {
     "dstdir": "upload"

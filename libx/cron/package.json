@@ -1,0 +1,6 @@
+{
+  "name": "cron",
+  "desc": "websys cron management extension",
+  "version": "0.0.1",
+  "main": "index.js"
+}
