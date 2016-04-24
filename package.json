@@ -28,6 +28,7 @@
     "mongodb": "^2.1.16",
     "mongoose": "^4.4.13",
     "multer": "^1.1.0",
+    "query-to-mongo": "^0.5.1",
     "session": "^0.1.0",
     "uuid": "^2.0.2"
   }
