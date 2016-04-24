@@ -19,7 +19,6 @@
   "dependencies": {
     "async": "^1.5.2",
     "body-parser": "^1.15.0",
-    "connect-multiparty": "^2.0.0",
     "cookie-parser": "^1.4.1",
     "ejs": "^2.4.1",
     "express": "^4.13.4",
@@ -28,6 +27,7 @@
     "momentjs": "^1.1.6",
     "mongodb": "^2.1.16",
     "mongoose": "^4.4.13",
+    "multer": "^1.1.0",
     "session": "^0.1.0",
     "uuid": "^2.0.2"
   }

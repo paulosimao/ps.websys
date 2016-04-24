@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css">
+    <script src="http://cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+    var url = "/d/documenttype?q={}";
+
+    //Main Screen
+    webix.ui({
+        rows: [
+            {
+                cols: [{
+                    view: "template",
+                    type: "header", template: "GED - Document Types"
+                }, {
+                    view: "toolbar",
+                    id  : "myToolbar",
+                    cols: [
+                        {view: "button", id: "btnDetails", value: "Details", width: 100, align: "left"},
+                        {view: "button", id: "btnAdd", value: "+", width: 100, align: "left"},
+                        {view: "button", id: "btnRemove", value: "-", width: 100, align: "center"}]
+                }]
+            },
+            {
+                view        : "datatable",
+                id          : 'datatable',
+                select      : "row",
+                multiselect : true,
+                columns     : [
+                    {
+                        id       : "code",
+                        sort     : "string",
+                        header   : ["Code", {content: "textFilter"}],
+                        fillspace: 4,
+                        editor   : 'text'
+                    },
+                    {
+                        id       : "name",
+                        header   : ["Name", {content: "textFilter"}],
+                        fillspace: 16,
+                        editor   : "text",
+                        sort     : "string",
+                    },
+                    {
+                        header   : "Durability",
+                        sort     : "string",
+                        id       : "durability",
+                        editor   : 'text',
+                        fillspace: 4
+                    }
+                ],
+                autoConfig  : true,
+                resizeColumn: true,
+
+                editable: true,
+                url     : url,
+                save    : url
+            },
+
+        ]
+    });
+
+    webix.ui({
+        view  : "window",
+        id    : "winUpload",
+        move  : true,
+        resize: true,
+        head  : "Upload",
+        body  : {
+
+            rows: [
+                {
+                    view    : "uploader",
+                    id      : "ulFiles",
+                    value   : "Upload file",
+                    link    : "mylist",
+                    upload  : "/c/upload",
+                    datatype: "json",
+                    autosend: false
+                },
+                {
+                    view      : "list", id: "mylist", type: "uploader",
+                    autoheight: true, borderless: true
+                },
+                {view: "button", id: 'btnSend', value: "Send"}
+            ]
+        }
+    });
+
+    // $$('frmUpload').bind($$('datatable'));
+
+    $$("btnAdd").attachEvent("onItemClick", function () {
+        $$('datatable').add({complete: false, name: 'New Task', desc: 'New Task', dueby: new Date()});
+        $$('datatable').save();
+    });
+    $$("btnRemove").attachEvent("onItemClick", function () {
+        if (!$$("datatable").getSelectedId()) {
+            webix.message("No item is selected!");
+            return; //'data' is an ID of the needed component
+        }
+        $$("datatable").remove($$("datatable").getSelectedId());
+    });
+    $$("btnDetails").attachEvent("onItemClick", function () {
+        $$('winUpload').show();
+    });
+    //    $$("btnDetailsCancel").attachEvent("onItemClick", function () {
+    //        $$('winUpload').hide();
+    //    })
+    $$("btnSend").attachEvent("onItemClick", function () {
+//        webix.send("/c/upload", $$('frmUpload').getValues());
+
+        $$('ulFiles').formData = {
+            a: 1,
+            b: 'farelo'
+        };
+
+        $$('ulFiles').send(function () {
+            webix.message('Done');
+        }, {
+            a: 2,
+            b: 'ferelo'
+        });
+//        $$('files').send(function () {
+//            webix.message('Done');
+//        });
+        //  $$('winUpload').save();
+        $$('winUpload').hide();
+    })
+
+
+</script>
+</body>
+</html>
