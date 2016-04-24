@@ -1,0 +1,6 @@
+{
+  "name": "personalschedule",
+  "desc": "websys schedule/agenda management extension",
+  "version": "0.0.1",
+  "main": "index.js"
+}

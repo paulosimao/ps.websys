@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css">
+    <script src="http://cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+    var url = "/d/scheduleitem?q={}";
+
+    //Main Screen
+    webix.ui({
+        rows: [
+            {
+                cols: [{
+                    view: "template",
+                    type: "header", template: "Gerenciador de Tarefas"
+                }, {
+                    view: "toolbar",
+                    id  : "myToolbar",
+                    cols: [
+                        {view: "button", id: "btnDetails", value: "Details", width: 100, align: "left"},
+                        {view: "button", id: "btnAdd", value: "+", width: 100, align: "left"},
+                        {view: "button", id: "btnRemove", value: "-", width: 100, align: "center"}]
+                }]
+            },
+            {
+                cols: [
+                    {
+                        view        : "datatable",
+                        id          : 'datatable',
+                        select      : "row",
+                        multiselect : true,
+                        columns     : [
+                            {id: "name", header: ["Name", {content: "textFilter"}], fillspace: 16, editor: "text"},
+                            {
+                                header   : "Start",
+                                sort     : "string",
+                                id       : "start",
+                                editor   : "date",
+                                fillspace: 4,
+                                format   : webix.Date.dateToStr("%d/%m/%y")
+                            }, {
+                                header   : "End",
+                                sort     : "string",
+                                id       : "end",
+                                editor   : "date",
+                                fillspace: 4,
+                                format   : webix.Date.dateToStr("%d/%m/%y")
+                            }
+//                    , {
+//                        header   : "Type",
+//                        sort     : "string",
+//                        id       : "type",
+//                        editor   : "select",
+//                        options  : '/d/tasktype?q={}&mode=lu&lulabel=desc',
+//                        fillspace: 4,
+//                        format   : webix.Date.dateToStr("%d/%m/%y")
+//                    }
+
+                        ],
+                        autoConfig  : true,
+                        resizeColumn: true,
+
+                        editable: true,
+                        url     : url,
+                        save    : url
+                    },
+                    {
+                        rows: [
+                            {
+                                view    : "property",
+                                id      : "propsDetails", width: 300,
+                                elements: [
+                                    {label: "Data url", type: "text", id: "name"},
+                                    {label: "Desc", type: "text", id: "description"},
+                                    {label: "summary", type: "text", id: "summary"},
+                                    {label: "Organizer", type: "text", id: "organizer"},
+                                    {label: "Location", type: "text", id: "location"},
+                                    {label: "URL", type: "text", id: "url"}
+                                ]
+                            }, {
+                                view : 'button',
+                                id   : 'btnUpdateProps',
+                                value: 'Update'
+                            }]
+                    }]
+            }
+        ]
+    });
+
+    webix.ui({
+        view  : "window",
+        id    : "winDetails",
+        move  : true,
+        resize: true,
+        head  : "Details",
+        body  : {
+
+            view    : "form",
+            id      : "frmDetails",
+            width   : 300,
+            elements: [
+                {view: "textarea", label: "Desc", id: "desc", name: 'desc'},
+                {
+                    margin: 5, cols: [
+                    {view: "button", id: 'btnDetailsSave', value: "Save", type: "form"},
+                    {view: "button", id: 'btnDetailsCancel', value: "Cancel"}
+                ]
+                }
+            ]
+        }
+
+    });
+
+    $$('propsDetails').bind($$('datatable'));
+
+    $$("btnAdd").attachEvent("onItemClick", function () {
+        $$('datatable').add({name: 'New Event', start: new Date(), end: new Date()});
+        $$('datatable').save();
+    });
+    $$("btnRemove").attachEvent("onItemClick", function () {
+        if (!$$("datatable").getSelectedId()) {
+            webix.message("No item is selected!");
+            return; //'data' is an ID of the needed component
+        }
+        $$("datatable").remove($$("datatable").getSelectedId());
+    });
+    $$("btnDetails").attachEvent("onItemClick", function () {
+        $$('winDetails').show();
+    });
+    $$("btnDetailsCancel").attachEvent("onItemClick", function () {
+        $$('winDetails').hide();
+    })
+    $$("btnUpdateProps").attachEvent("onItemClick", function () {
+        $$('propsDetails').save();
+    })
+
+
+</script>
+</body>
+</html>

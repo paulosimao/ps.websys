@@ -1,0 +1,6 @@
+{
+  "name": "ged",
+  "desc": "websys ged extension",
+  "version": "0.0.1",
+  "main": "index.js"
+}

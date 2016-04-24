@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css">
+    <script src="http://cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+    var url = "/d/document?q={}";
+
+    //Main Screen
+    webix.ui({
+        rows: [
+            {
+                cols: [{
+                    view: "template",
+                    type: "header", template: "GED - Documents List"
+                }, {
+                    view: "toolbar",
+                    id  : "myToolbar",
+                    cols: [
+                        {view: "button", id: "btnDetails", value: "Upload", width: 100, align: "left"},
+                        {view: "button", id: "btnAdd", value: "+", width: 100, align: "left"},
+                        {view: "button", id: "btnRemove", value: "-", width: 100, align: "center"},
+                        {view: "button", id: "btnDoctypes", value: "Doc Types", width: 100, align: "center"},
+                        {view: "button", id: "btnDocfilters", value: "Doc Filters", width: 100, align: "center"}]
+                }]
+            }, {
+                cols: [
+                    {
+                        view  : "tree",
+                        id    : 'treeDocFilter',
+                        resize: true,
+                        width : 300,
+                        url   : "/d/documentfilter?q={}&mode=tree"
+                    },
+                    {
+                        view        : "datatable",
+                        id          : 'datatable',
+                        select      : "row",
+                        multiselect : true,
+                        columns     : [
+                            {
+                                id: "dl", header: "DL", template: "<span class='dllink'>DL</span>", fillspace: 1
+                            },
+                            {id: "name", header: ["Name", {content: "textFilter"}], fillspace: 16, editor: "text"},
+                            {
+                                header   : ["Original Name", {content: "textFilter"}],
+                                sort     : "string",
+                                id       : "originalname",
+                                editor   : "text",
+                                fillspace: 4
+                            }
+                            , {
+                                header   : "Type",
+                                sort     : "string",
+                                id       : "type",
+                                editor   : "select",
+                                options  : '/d/documenttype?q={}&mode=lu&lulabel=label',
+                                fillspace: 4,
+                            }
+
+                        ],
+                        autoConfig  : true,
+                        resizeColumn: true,
+
+                        editable: true,
+                        url     : url,
+                        save    : url,
+                        onClick : {
+                            dllink: function (e, id) {
+                                window.open('/c/geddownload?id=' + id, new Date().getTime);
+//                        webix.message(this.getItem(id).title);
+                                return false;
+                            }
+                        }
+                    }]
+            }
+
+        ]
+
+    });
+
+    webix.ui({
+        view  : "window",
+        id    : "winUpload",
+        move  : true,
+        resize: true,
+        head  : "Upload",
+        body  : {
+
+            rows: [
+                {view: 'text', id: 'txtName', label: 'Doc Name'},
+                {
+                    view   : 'select',
+                    id     : 'selDoctype',
+                    label  : 'Doc Type',
+                    options: '/d/documenttype?q={}&mode=lu&lulabel=label'
+                },
+                {view: "checkbox", id: "cbMultiDoc", label: "Multiple Docs?", value: false},
+
+                {
+                    view    : "uploader",
+                    id      : "ulFiles",
+                    value   : "Upload file",
+                    link    : "mylist",
+                    upload  : "/c/upload",
+                    datatype: "json",
+                    autosend: false
+                },
+                {
+                    view      : "list", id: "mylist", type: "uploader",
+                    autoheight: true, borderless: true
+                },
+                {view: "button", id: 'btnSend', value: "Send"}
+            ]
+        }
+    });
+
+    // $$('frmUpload').bind($$('datatable'));
+
+    $$("btnAdd").attachEvent("onItemClick", function () {
+        $$('datatable').add({complete: false, name: 'New Task', desc: 'New Task', dueby: new Date()});
+        $$('datatable').save();
+    });
+    $$("btnRemove").attachEvent("onItemClick", function () {
+        if (!$$("datatable").getSelectedId()) {
+            webix.message("No item is selected!");
+            return; //'data' is an ID of the needed component
+        }
+        $$("datatable").remove($$("datatable").getSelectedId());
+    });
+    $$("btnDetails").attachEvent("onItemClick", function () {
+        $$('winUpload').show();
+    });
+    $$("btnDoctypes").attachEvent("onItemClick", function () {
+        window.open('doctypes.html', new Date().toISOString());
+    });
+    $$("btnDocfilters").attachEvent("onItemClick", function () {
+        window.open('docfilters.html', new Date().toISOString());
+    });
+    $$("btnSend").attachEvent("onItemClick", function () {
+
+        var params = {
+            doctype   : $$('selDoctype').getValue(),
+            docname   : $$('txtName').getValue(),
+            docismulti: $$('cbMultiDoc').getValue() == 1,
+            cmd       : 'gedupload'
+        };
+
+        $$('ulFiles').send(function (msg) {
+            webix.message('Done:' + msg);
+            $$('ulFiles').files.clearAll();
+            $$('winUpload').hide();
+
+        }, params);
+
+
+    })
+    $$('treeDocFilter').attachEvent("onItemClick", function (id, e, node) {
+        var item            = this.getItem(id);
+        $$('datatable').url = "/d/document?q=" + item.filter;
+        $$('datatable').clearAll()
+        $$('datatable').load($$('datatable').url);
+        //webix.message(JSON.stringify(item, null, 4));
+
+    });
+
+
+</script>
+</body>
+</html>
